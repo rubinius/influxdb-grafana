@@ -5,11 +5,19 @@ Docker container for using InfluxDB + Grafana to consume Rubinius Metrics StatsD
 
 ## Usage
 
-```shell
-docker run -d \
-  -p 8125:8125/udp \
-  -p 80:80 \
-  rubinius/influxdb-grafana
-```
+1. [Install docker](https://docs.docker.com/installation/).
 
-(Depending on your docker installation, you may need to run with `sudo`)
+2. Run an instance of the container.  If this is the first time you're running it, docker will automatically download the stack of images that make up the container.  The following command will run the container as a daemon (`-d`), mapping port `8125` of `localhost` to the container's `8125` statsd port and port `80` of `localhost` to the container's `80` port serving the grafana interface.  Depending on how docker is installed, you may need to run this command with `sudo`.
+
+    ```shell
+    docker run -d \
+      -p 8125:8125/udp \
+      -p 80:80 \
+      rubinius/influxdb-grafana
+    ```
+
+3. Run your application with Rubinius configured to output metrics to statsd at `localhost:8125`.
+
+    ```shell
+    RBXOPT="-Xsystem.metrics.target=statsd -Xsystem.metrics.statsd.server=localhost:8125" rbx # (your app here)
+    ```
