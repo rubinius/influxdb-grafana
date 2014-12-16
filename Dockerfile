@@ -14,7 +14,8 @@ EXPOSE 80
 
 # Install some basic utilities with the OS package manager
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y wget curl supervisor nginx-light npm
+RUN apt-get install -y wget curl python-pip supervisor nginx-light npm
+RUN pip install envtpl
 
 # Install statsd and backend and configuration
 RUN npm -g install statsd
@@ -34,8 +35,9 @@ RUN influxdb/setup.sh
 RUN mkdir /src
 RUN wget http://grafanarel.s3.amazonaws.com/grafana-1.9.0.tar.gz -O /src/grafana.tar.gz
 RUN cd /src && tar -xvf grafana.tar.gz && mv grafana-1.9.0 grafana
-ADD grafana/config.js /src/grafana/config.js
+ADD grafana/config.js.tpl /src/grafana/config.js.tpl
 ADD grafana/rbx-dash.json /src/grafana/app/dashboards/rbx-dash.json
+ADD grafana/setup.sh /src/grafana/setup.sh
 # Add nginx configuration
 ADD nginx/nginx.conf /etc/nginx/nginx.conf
 

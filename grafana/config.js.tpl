@@ -15,13 +15,13 @@ define(['settings'], function(Settings) {
       datasources: {
         rbx: {
           type: 'influxdb',
-          url: "http://localhost:8086/db/rbx",
+          url: "{{ INFLUXDB_SERVER | default("http://localhost:8086") }}/db/rbx",
           username: 'root',
           password: 'root',
         },
         grafana: {
           type: 'influxdb',
-          url: "http://localhost:8086/db/grafana",
+          url: "{{ INFLUXDB_SERVER | default("http://localhost:8086") }}/db/grafana",
           username: 'root',
           password: 'root',
           grafanaDB: true
