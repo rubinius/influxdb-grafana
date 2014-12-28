@@ -16,15 +16,15 @@
       "collapse": false,
       "panels": [
         {
-          "id": 5,
-          "span": 4,
+          "id": 8,
+          "span": 12,
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "scale": 1,
           "y_formats": [
-            "short",
-            "short"
+            "bytes",
+            "none"
           ],
           "grid": {
             "max": null,
@@ -33,18 +33,19 @@
             "rightMax": null,
             "leftMin": null,
             "rightMin": null,
-            "threshold1": null,
+            "threshold1": -1,
             "threshold2": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            "threshold1Color": "rgba(27, 69, 216, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)",
+            "thresholdLine": true
           },
           "resolution": 100,
-          "lines": true,
+          "lines": false,
           "fill": 5,
-          "linewidth": 2,
+          "linewidth": 1,
           "points": false,
-          "pointradius": 5,
-          "bars": false,
+          "pointradius": 10,
+          "bars": true,
           "stack": true,
           "spyable": true,
           "options": false,
@@ -53,11 +54,12 @@
             "values": true,
             "min": true,
             "max": true,
-            "current": false,
+            "current": true,
             "total": false,
             "avg": false,
             "alignAsTable": true,
-            "sortDesc": true
+            "sortDesc": true,
+            "rightSide": true
           },
           "interactive": true,
           "legend_counts": true,
@@ -66,7 +68,7 @@
           "nullPointMode": "connected",
           "steppedLine": false,
           "tooltip": {
-            "value_type": "cumulative",
+            "value_type": "individual",
             "query_as_alias": true,
             "shared": false
           },
@@ -75,150 +77,54 @@
               "target": "randomWalk('random walk')",
               "function": "mean",
               "column": "value",
-              "series": "/[\\w]*.app.rbx.gc.young.count.gauge/",
-              "query": "select mean(value) from /[\\w]*.app.rbx.gc.young.count.gauge/ where $timeFilter group by time($interval) order asc"
+              "series": "/host.local.Baile.app.rbx.memory.*.bytes.total/",
+              "query": "select value from /[\\w]*.app.rbx.memory.young.bytes.current/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "value",
+              "series": "select value from /[\\w]*.app.rbx.memory.*.bytes.current/ where $timeFilter group by time($interval) order asc",
+              "query": "select value from /[\\w]*.app.rbx.memory.immix.bytes.current/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "value",
+              "rawQuery": true,
+              "query": "select value from /[\\w]*.app.rbx.memory.large.bytes.current/ where $timeFilter group by time($interval) order asc",
+              "interval": "10s"
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "value",
+              "series": "host.local.Baile.app.rbx.memory.jit.bytes.gauge",
+              "query": "select value from /[\\w]*.app.rbx.memory.jit.bytes.gauge/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
             }
           ],
           "aliasColors": {
-            "host.local.Baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
-            "host.on.group.baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1"
+            "host.on.group.baile.app.rbx.memory.immix.bytes.current.gauge.value": "#E24D42",
+            "host.on.group.baile.app.rbx.memory.young.bytes.current.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.bytes.current.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.large.bytes.current.gauge.value": "#629E51"
           },
           "aliasYAxis": {},
-          "title": "GC Young",
+          "title": "Memory",
           "datasource": "graphite",
           "renderer": "flot",
           "annotate": {
             "enable": false
           },
           "seriesOverrides": [],
-          "links": []
-        },
-        {
-          "title": "GC Large",
-          "error": false,
-          "span": 4,
-          "editable": true,
-          "type": "graph",
-          "id": 12,
-          "datasource": null,
-          "renderer": "flot",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
-          ],
-          "grid": {
-            "leftMax": null,
-            "rightMax": null,
-            "leftMin": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold2": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "lines": true,
-          "fill": 5,
-          "linewidth": 1,
-          "points": false,
-          "pointradius": 5,
-          "bars": false,
-          "stack": false,
-          "percentage": false,
-          "legend": {
-            "show": true,
-            "values": true,
-            "min": true,
-            "max": true,
-            "current": true,
-            "total": false,
-            "avg": false,
-            "alignAsTable": true
-          },
-          "nullPointMode": "connected",
-          "steppedLine": false,
-          "tooltip": {
-            "value_type": "cumulative",
-            "shared": false
-          },
-          "targets": [
-            {
-              "function": "mean",
-              "column": "value",
-              "series": "/[\\d]*.app.rbx.gc.large.count.gauge/",
-              "query": "select mean(value) from /[\\d]*.app.rbx.gc.large.count.gauge/ where $timeFilter group by time($interval) order asc"
-            }
-          ],
-          "aliasColors": {
-            "host.on.group.baile.app.rbx.gc.large.count.gauge.mean": "#EAB839"
-          },
-          "seriesOverrides": [],
-          "links": []
-        },
-        {
-          "title": "GC Immix",
-          "error": false,
-          "span": 4,
-          "editable": true,
-          "type": "graph",
-          "id": 13,
-          "datasource": null,
-          "renderer": "flot",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
-          ],
-          "grid": {
-            "leftMax": null,
-            "rightMax": null,
-            "leftMin": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold2": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "lines": true,
-          "fill": 5,
-          "linewidth": 1,
-          "points": false,
-          "pointradius": 5,
-          "bars": false,
-          "stack": false,
-          "percentage": false,
-          "legend": {
-            "show": true,
-            "values": true,
-            "min": true,
-            "max": true,
-            "current": true,
-            "total": false,
-            "avg": false,
-            "alignAsTable": true
-          },
-          "nullPointMode": "connected",
-          "steppedLine": false,
-          "tooltip": {
-            "value_type": "cumulative",
-            "shared": false
-          },
-          "targets": [
-            {
-              "function": "mean",
-              "column": "value",
-              "series": "/[\\w]*.rbx.gc.immix.count.gauge/",
-              "query": "select mean(value) from /[\\w]*.rbx.gc.immix.count.gauge/ where $timeFilter group by time($interval) order asc"
-            }
-          ],
-          "aliasColors": {
-            "host.local.Baile.app.rbx.gc.immix.count.gauge.mean": "#EAB839",
-            "host.on.group.baile.app.rbx.gc.immix.count.gauge.mean": "#E24D42"
-          },
-          "seriesOverrides": [],
-          "links": []
+          "links": [],
+          "leftYAxisLabel": ""
         }
       ]
     },
@@ -384,7 +290,7 @@
               "function": "mean",
               "column": "value",
               "series": "host.local.Baile.app.rbx.jit.methods.compiled.gauge",
-              "query": "select value from /[\\w]*.app.rbx.jit.methods.compiled.gauge/ where $timeFilter group by time($interval) order asc",
+              "query": "select value from /[\\w]*.app.rbx.jit.methods.queued.gauge/ where $timeFilter group by time($interval) order asc",
               "interval": "10s",
               "rawQuery": true
             }
@@ -409,15 +315,15 @@
       "collapse": false,
       "panels": [
         {
-          "id": 8,
-          "span": 12,
+          "id": 5,
+          "span": 4,
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "scale": 1,
           "y_formats": [
-            "bytes",
-            "none"
+            "short",
+            "short"
           ],
           "grid": {
             "max": null,
@@ -426,33 +332,31 @@
             "rightMax": null,
             "leftMin": null,
             "rightMin": null,
-            "threshold1": -1,
+            "threshold1": null,
             "threshold2": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2Color": "rgba(234, 112, 112, 0.22)",
-            "thresholdLine": true
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "resolution": 100,
-          "lines": false,
-          "fill": 10,
+          "lines": true,
+          "fill": 5,
           "linewidth": 2,
           "points": false,
           "pointradius": 5,
-          "bars": true,
+          "bars": false,
           "stack": true,
           "spyable": true,
           "options": false,
           "legend": {
             "show": true,
-            "values": false,
+            "values": true,
             "min": true,
             "max": true,
             "current": false,
             "total": false,
             "avg": false,
             "alignAsTable": true,
-            "sortDesc": true,
-            "rightSide": true
+            "sortDesc": true
           },
           "interactive": true,
           "legend_counts": true,
@@ -470,26 +374,161 @@
               "target": "randomWalk('random walk')",
               "function": "mean",
               "column": "value",
-              "series": "/host.local.Baile.app.rbx.memory.*.bytes.total/",
-              "query": "select value from /[\\w]*.app.rbx.memory.*.bytes.current/ where $timeFilter group by time($interval) order asc",
+              "series": "/host.local.Baile.app.rbx.memory.*.objects.current.gauge/",
+              "query": "select value from /host.local.Baile.app.rbx.memory.young.objects.current.gauge/ where $timeFilter group by time($interval) order asc",
               "rawQuery": true,
               "interval": "10s"
             }
           ],
           "aliasColors": {
-            "host.on.group.baile.app.rbx.memory.immix.bytes.current.gauge.value": "#E24D42",
-            "host.on.group.baile.app.rbx.memory.young.bytes.current.gauge.value": "#1F78C1"
+            "host.local.Baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.on.group.baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.young.count.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.current.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.total.gauge.value": "#1F78C1"
           },
           "aliasYAxis": {},
-          "title": "Memory",
+          "title": "Young Objects",
           "datasource": "graphite",
           "renderer": "flot",
           "annotate": {
             "enable": false
           },
           "seriesOverrides": [],
-          "links": [],
-          "leftYAxisLabel": ""
+          "links": []
+        },
+        {
+          "title": "Immix Objects",
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 13,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ],
+          "grid": {
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "lines": true,
+          "fill": 5,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": true,
+            "max": true,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true,
+            "sortDesc": true
+          },
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "shared": false
+          },
+          "targets": [
+            {
+              "function": "mean",
+              "column": "value",
+              "series": "/[\\w]*.rbx.memory.*/",
+              "query": "select value from /[\\w]*.rbx.memory.immix.objects.current/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true
+            }
+          ],
+          "aliasColors": {
+            "host.local.Baile.app.rbx.gc.immix.count.gauge.mean": "#EAB839",
+            "host.on.group.baile.app.rbx.gc.immix.count.gauge.mean": "#E24D42",
+            "host.local.Baile.app.rbx.memory.immix.objects.total.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.memory.immix.objects.current.gauge.value": "#EAB839"
+          },
+          "seriesOverrides": [],
+          "links": []
+        },
+        {
+          "title": "Large Objects",
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 12,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ],
+          "grid": {
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "lines": true,
+          "fill": 5,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": true,
+            "max": true,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true
+          },
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "shared": false
+          },
+          "targets": [
+            {
+              "function": "mean",
+              "column": "value",
+              "series": "/[\\d]*.app.rbx.gc.large.count.gauge/",
+              "query": "select value from /host.local.Baile.app.rbx.memory.large.objects.total.gauge/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
+            }
+          ],
+          "aliasColors": {
+            "host.on.group.baile.app.rbx.gc.large.count.gauge.mean": "#EAB839"
+          },
+          "seriesOverrides": [],
+          "links": []
         }
       ]
     },
@@ -754,6 +793,548 @@
           "links": []
         }
       ]
+    },
+    {
+      "title": "test",
+      "height": "500px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "id": 14,
+          "span": 4,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "short",
+            "short"
+          ],
+          "grid": {
+            "max": null,
+            "min": null,
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 5,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "options": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": true,
+            "max": true,
+            "current": false,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true,
+            "sortDesc": true,
+            "sort": "max"
+          },
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true,
+            "shared": false
+          },
+          "targets": [
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "/host.local.Baile.app.rbx.memory.*.objects.current.gauge/",
+              "query": "select value from /host.local.Baile.app.rbx.gc.young.count.*/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
+            }
+          ],
+          "aliasColors": {
+            "host.local.Baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.on.group.baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.young.count.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.current.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.total.gauge.value": "#1F78C1"
+          },
+          "aliasYAxis": {},
+          "title": "Young GC Run Count",
+          "datasource": "graphite",
+          "renderer": "flot",
+          "annotate": {
+            "enable": false
+          },
+          "seriesOverrides": [],
+          "links": []
+        },
+        {
+          "title": "GC Immix Run Count",
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 15,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ],
+          "grid": {
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "lines": true,
+          "fill": 5,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": true,
+            "max": true,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true,
+            "sortDesc": true
+          },
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "shared": false
+          },
+          "targets": [
+            {
+              "function": "mean",
+              "column": "value",
+              "series": "/[\\w]*.rbx.memory.*/",
+              "query": "select value from /[\\w]*.rbx.gc.immix.count/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true
+            }
+          ],
+          "aliasColors": {
+            "host.local.Baile.app.rbx.gc.immix.count.gauge.mean": "#EAB839",
+            "host.on.group.baile.app.rbx.gc.immix.count.gauge.mean": "#E24D42",
+            "host.local.Baile.app.rbx.memory.immix.objects.total.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.memory.immix.objects.current.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.gc.immix.count.gauge.value": "#EAB839"
+          },
+          "seriesOverrides": [],
+          "links": []
+        },
+        {
+          "title": "GC Large Run Count",
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 16,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ],
+          "grid": {
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "lines": true,
+          "fill": 5,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": true,
+            "max": true,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true
+          },
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "shared": false
+          },
+          "targets": [
+            {
+              "function": "mean",
+              "column": "value",
+              "series": "/[\\d]*.app.rbx.gc.large.count.gauge/",
+              "query": "select value from /host.local.Baile.app.rbx.gc.large.count.gauge/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
+            }
+          ],
+          "aliasColors": {
+            "host.on.group.baile.app.rbx.gc.large.count.gauge.mean": "#EAB839"
+          },
+          "seriesOverrides": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "title": "test",
+      "height": "500px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "id": 17,
+          "span": 12,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "ms",
+            "none"
+          ],
+          "grid": {
+            "max": null,
+            "min": null,
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 5,
+          "linewidth": 1,
+          "points": true,
+          "pointradius": 2,
+          "bars": false,
+          "stack": false,
+          "spyable": true,
+          "options": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": true,
+            "max": true,
+            "current": false,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true,
+            "sortDesc": true,
+            "sort": "max",
+            "rightSide": true
+          },
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true,
+            "shared": false
+          },
+          "targets": [
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "/host.local.Baile.app.rbx.gc.*.last.ms.gauge/",
+              "query": "select value from /host.local.Baile.app.rbx.gc.*.last.ms.gauge/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
+            }
+          ],
+          "aliasColors": {
+            "host.local.Baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.on.group.baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.young.count.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.current.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.total.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.last.ms.gauge.mean": "#EAB839",
+            "host.local.Baile.app.rbx.gc.immix.stop.last.ms.gauge.mean": "#EF843C",
+            "host.local.Baile.app.rbx.gc.young.last.ms.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.large.sweep.last.ms.gauge.mean": "#7EB26D",
+            "host.local.Baile.app.rbx.gc.large.sweep.last.ms.gauge.value": "#7EB26D",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.last.ms.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.gc.immix.stop.last.ms.gauge.value": "#E24D42",
+            "host.local.Baile.app.rbx.gc.young.last.ms.gauge.value": "#1F78C1"
+          },
+          "aliasYAxis": {},
+          "title": "GC Last Times",
+          "datasource": "graphite",
+          "renderer": "flot",
+          "annotate": {
+            "enable": false
+          },
+          "seriesOverrides": [],
+          "links": [],
+          "height": "400px"
+        }
+      ]
+    },
+    {
+      "title": "test",
+      "height": "500px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "id": 18,
+          "span": 12,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "ms",
+            "none"
+          ],
+          "grid": {
+            "max": null,
+            "min": null,
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 5,
+          "linewidth": 1,
+          "points": true,
+          "pointradius": 2,
+          "bars": false,
+          "stack": false,
+          "spyable": true,
+          "options": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": false,
+            "max": false,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true,
+            "sortDesc": true,
+            "sort": "max",
+            "rightSide": true
+          },
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true,
+            "shared": false
+          },
+          "targets": [
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "/host.local.Baile.app.rbx.gc.*.last.ms.gauge/",
+              "query": "select value from /host.local.Baile.app.rbx.gc.*.total.ms.gauge/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "10s"
+            }
+          ],
+          "aliasColors": {
+            "host.local.Baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.on.group.baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.young.count.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.current.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.total.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.last.ms.gauge.mean": "#EAB839",
+            "host.local.Baile.app.rbx.gc.immix.stop.last.ms.gauge.mean": "#EF843C",
+            "host.local.Baile.app.rbx.gc.young.last.ms.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.large.sweep.last.ms.gauge.mean": "#7EB26D",
+            "host.local.Baile.app.rbx.gc.large.sweep.last.ms.gauge.value": "#7EB26D",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.last.ms.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.gc.immix.stop.last.ms.gauge.value": "#E24D42",
+            "host.local.Baile.app.rbx.gc.young.last.ms.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.total.ms.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.gc.young.total.ms.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.immix.stop.total.ms.gauge.value": "#E24D42",
+            "host.local.Baile.app.rbx.gc.large.sweep.total.ms.gauge.value": "#508642"
+          },
+          "aliasYAxis": {},
+          "title": "GC Total Times",
+          "datasource": "graphite",
+          "renderer": "flot",
+          "annotate": {
+            "enable": false
+          },
+          "seriesOverrides": [],
+          "links": [],
+          "height": "400px"
+        }
+      ]
+    },
+    {
+      "title": "test",
+      "height": "500px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "id": 19,
+          "span": 12,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "µs",
+            "none"
+          ],
+          "grid": {
+            "max": null,
+            "min": null,
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 5,
+          "linewidth": 1,
+          "points": true,
+          "pointradius": 2,
+          "bars": false,
+          "stack": false,
+          "spyable": true,
+          "options": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": false,
+            "max": false,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": true,
+            "sortDesc": true,
+            "sort": "max",
+            "rightSide": true
+          },
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true,
+            "shared": false
+          },
+          "targets": [
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "host.local.Baile.app.rbx.jit.time.total.us.gauge",
+              "query": "select value from /host.local.Baile.app.rbx.jit.time.*.us.gauge/ where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "interval": "0.1s"
+            }
+          ],
+          "aliasColors": {
+            "host.local.Baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.on.group.baile.app.rbx.gc.young.count.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.young.count.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.current.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.memory.young.objects.total.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.last.ms.gauge.mean": "#EAB839",
+            "host.local.Baile.app.rbx.gc.immix.stop.last.ms.gauge.mean": "#EF843C",
+            "host.local.Baile.app.rbx.gc.young.last.ms.gauge.mean": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.large.sweep.last.ms.gauge.mean": "#7EB26D",
+            "host.local.Baile.app.rbx.gc.large.sweep.last.ms.gauge.value": "#7EB26D",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.last.ms.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.gc.immix.stop.last.ms.gauge.value": "#E24D42",
+            "host.local.Baile.app.rbx.gc.young.last.ms.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.immix.concurrent.total.ms.gauge.value": "#EAB839",
+            "host.local.Baile.app.rbx.gc.young.total.ms.gauge.value": "#1F78C1",
+            "host.local.Baile.app.rbx.gc.immix.stop.total.ms.gauge.value": "#E24D42",
+            "host.local.Baile.app.rbx.gc.large.sweep.total.ms.gauge.value": "#508642",
+            "host.local.Baile.app.rbx.jit.time.total.us.gauge.value": "#E24D42",
+            "host.local.Baile.app.rbx.jit.time.last.us.gauge.value": "#EF843C"
+          },
+          "aliasYAxis": {},
+          "title": "JIT Times",
+          "datasource": "graphite",
+          "renderer": "flot",
+          "annotate": {
+            "enable": false
+          },
+          "seriesOverrides": [],
+          "links": [],
+          "height": "400px"
+        }
+      ]
     }
   ],
   "nav": [
@@ -787,13 +1368,13 @@
         "2h",
         "1d"
       ],
-      "now": true,
+      "now": false,
       "notice": false
     }
   ],
   "time": {
-    "from": "now-15m",
-    "to": "now"
+    "from": "2014-12-16T17:37:50.284Z",
+    "to": "2014-12-16T17:40:44.944Z"
   },
   "templating": {
     "list": [],
@@ -803,7 +1384,7 @@
     "list": [],
     "enable": true
   },
-  "refresh": "10s",
+  "refresh": "5s",
   "version": 6,
   "hideAllLegends": false
 }
